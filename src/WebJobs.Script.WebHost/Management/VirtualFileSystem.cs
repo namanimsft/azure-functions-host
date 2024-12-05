@@ -652,6 +652,9 @@ namespace Microsoft.Azure.WebJobs.Script.WebHost.Management
                         Formatting = Formatting.None
                     };
 
+                    // Check if the payload is a string or an exception
+                    payload = payload is string ? payload as string : payload is Exception ? (payload as Exception).Message : payload;
+
                     // Sanitize the payload if it's an object
                     var content = payload is string ? payload as string : JsonConvert.SerializeObject(payload, jsonSerializerSettings);
                     response.Content = new StringContent(content, Encoding.UTF8, "application/json");
