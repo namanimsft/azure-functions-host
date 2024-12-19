@@ -653,7 +653,12 @@ namespace Microsoft.Azure.WebJobs.Script.WebHost.Management
                     };
 
                     // Check if the payload is a string or an exception
-                    payload = payload is string ? payload as string : payload is Exception ? (payload as Exception).Message : payload;
+                    payload = payload switch
+                    {
+                        string str => str,
+                        Exception ex => ex.Message,
+                        _ => payload
+                    };
 
                     // Sanitize the payload if it's an object
                     var content = payload is string ? payload as string : JsonConvert.SerializeObject(payload, jsonSerializerSettings);
