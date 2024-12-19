@@ -661,7 +661,11 @@ namespace Microsoft.Azure.WebJobs.Script.WebHost.Management
                     };
 
                     // Sanitize the payload if it's an object
-                    var content = payload is string ? payload as string : JsonConvert.SerializeObject(payload, jsonSerializerSettings);
+                    var content = payload switch
+                    {
+                        string str => str,
+                        _ => JsonConvert.SerializeObject(payload, jsonSerializerSettings)
+                    };
                     response.Content = new StringContent(content, Encoding.UTF8, "application/json");
                 }
             }
